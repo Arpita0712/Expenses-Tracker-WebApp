@@ -2,7 +2,7 @@
 
 # Maven image
 
-FROM maven:3.8.3-openjdk-17 AS builder 
+FROM maven:3.8.5-eclipse-temurin-17-alpine AS builder 
 
 # Set working directory
 
@@ -26,7 +26,7 @@ RUN mvn clean install -DskipTests=true
 
 # Import small size java image
 
-FROM openjdk:17-alpine
+FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app 
 
