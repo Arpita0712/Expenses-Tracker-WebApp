@@ -26,7 +26,7 @@ RUN mvn clean install -DskipTests=true
 
 # Import small size java image
 
-FROM openjdk:17-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app 
 
@@ -40,3 +40,4 @@ EXPOSE 8080
 
 # Start the application
 ENTRYPOINT ["java", "-jar", "/app/target/expenseapp.jar"]
+#start the pipeline 
