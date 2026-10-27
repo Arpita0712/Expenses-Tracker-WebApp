@@ -4,14 +4,16 @@ services:
     image: mysql:latest
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: Test@123
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_password
       MYSQL_DATABASE: expenses_tracker
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
       - appbridge
     healthcheck:
-      test: ["CMD","mysqladmin","ping","-h","localhost","-uroot","-pTest@123"]
+      test:
+        - CMD-SHELL
+        - 'MYSQL_PWD="$$(cat /run/secrets/mysql_password)" mysql -h 127.0.0.1 -uroot -e "SELECT 1" >/dev/null 2>&1'
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +26,10 @@ services:
     environment:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/expenses_tracker?allowPublicKeyRetrieval=true&useSSL=false"
-      SPRING_DATASOURCE_PASSWORD: Test@123
+      SPRING_CONFIG_IMPORT: "configtree:/run/secrets/"
+    secrets:
+      - source: mysql_password
+        target: spring.datasource.password
     ports:
       - "8080:8080"
     networks:
@@ -32,6 +37,10 @@ services:
     depends_on:
       - mysql
     restart: always
+    
+secrets:
+  mysql_password:
+    file: ./secrets/mysql_password.txt
 
 networks:
   appbridge:
