@@ -6,6 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: /run/secrets/mysql_password
       MYSQL_DATABASE: expenses_tracker
+    secrets:
+      - mysql_password
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
